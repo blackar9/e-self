@@ -1,0 +1,924 @@
+/*
+  $Id$
+  */
+
+function removeOUFromList(dn,domainName)
+{
+	removeOUFromListBean(dn, domainName, "ReportBean");
+}
+
+function removeOUFromListBean(dn,domainName, beanName,isSubmit) 
+{
+var url ='Report.do?beanName=' + beanName + '&methodToCall=removeOus'; //NO I18N
+var params= "toBeRemovedOu="+encodeURIComponent(dn)+"&distinguishedName="+encodeURIComponent(domainName); //NO I18N
+if(isSubmit=="false")
+{
+AjaxAPI.sendRequest({URL:url,PARAMETERS:params,ONSUCCESSFUNC:removeRow,DN:dn,DOMAINNAME:domainName,BEANNAME:beanName});
+}
+else
+{
+AjaxAPI.sendRequest({URL:url,PARAMETERS:params,ONSUCCESSFUNC:submitOnChange});
+}
+}
+function removeAllOusFromListBean(domainName, beanName,isSubmit)
+{
+	var url ='Report.do?beanName=' + beanName + '&methodToCall=removeOus'; //NO I18N
+	var params= "REMOVE_ALL_OUS=true&distinguishedName="+encodeURIComponent(domainName); //NO I18N
+	if(isSubmit=="false")
+	{
+		AjaxAPI.sendRequest({URL:url,PARAMETERS:params,ONSUCCESSFUNC:removeRow,DN:dn,DOMAINNAME:domainName,BEANNAME:beanName});
+	}
+	else
+	{
+		AjaxAPI.sendRequest({URL:url,PARAMETERS:params,ONSUCCESSFUNC:submitOnChange});
+	}
+}
+/*
+
+
+	
+}
+
+/*
+		var req;
+		//dn = replaceSubstring(dn, "\\", "\\\\");
+		var url ='Report.do?beanName=' + beanName + '&methodToCall=removeOus';
+		if (window.ActiveXObject){
+			req = new ActiveXObject("Microsoft.XMLHTTP");
+			if (req){
+				req.open("POST", url, true);
+				req.setRequestHeader("Content-Type","application/x-www-form-urlencoded;charset:UTF-8");
+				req.send("toBeRemovedOu="+encodeURIComponent(dn)+"&distinguishedName="+encodeURIComponent(domainName));
+				req.onreadystatechange = function(){
+					if (req.readyState == 4){
+						if (req.status == 200) 
+							removeRow(req, dn, domainName, beanName);//tableId,OuDiv,firstOU,isIE);
+						else 
+							alert(jsTitleMsg.adssp_ajaxerror_retrieve_xmldata+req.statusText);
+					}
+				};
+			}
+		} else if (window.XMLHttpRequest){
+			req = new XMLHttpRequest();
+			req.open("POST", url, true);
+			req.setRequestHeader("Content-Type","application/x-www-form-urlencoded;charset:UTF-8");
+			req.send("toBeRemovedOu="+encodeURIComponent(dn)+"&distinguishedName="+encodeURIComponent(domainName));
+			req.onreadystatechange = function(){
+				if (req.readyState == 4){
+					if (req.status == 200) 
+						removeRow(req, dn, domainName, beanName);//tableId,OuDiv,firstOU,isIE);
+					else 
+						alert(jsTitleMsg.adssp_ajaxerror_retrieve_xmldata+req.statusText);
+				}
+		*/
+
+function removeRow(response, reqOptions) 
+{
+	var req = response.transport;
+	var dn=reqOptions["DN"]; //No I18N
+	var domainName=reqOptions["DOMAINNAME"]; //No I18N
+	var beanName=reqOptions["BEANNAME"]; //No I18N
+
+	var x = req.responseXML.getElementsByTagName('status');
+	var messageType = x[0].getAttribute("messageType");
+	var message = x[0].getAttribute("message");
+	var table = document.getElementById(domainName+"_selOUTable");
+	//if(messageType == 'Clear')
+	{
+		//document.getElementById(domainName+"moreOuLink").style.display = 'none';
+		//document.getElementById(domainName+"firstOU").innerHTML="All";
+	}
+	//else
+	{
+		if(messageType=='Success')
+		{
+			var index = document.getElementById(dn+'_Row').rowIndex;
+			table.deleteRow(index);
+		}
+		if(eval(table.rows[0]))
+		{
+			if(beanName == 'ADMPUserBean')
+			{
+			}
+			else
+			{	
+				var outxt = table.rows[0].cells[1].innerHTML;
+				outxt = outxt.substring(0,10)+"...";
+				document.getElementById(domainName+"firstOU").innerHTML=outxt;
+			}
+		} 
+		else 
+		{
+			if(beanName == 'ADMPUserBean')
+			{
+				yreg_popLayer(domainName+"selectedOus");
+				document.getElementById(domainName+"moreOuLink").style.display = 'none';
+				document.getElementById(domainName+"All").style.display = 'block';
+			}
+			else
+			{	
+				yreg_popLayer(domainName+"selectedOus");
+				document.getElementById(domainName+"moreOuLink").style.display = 'none';
+				document.getElementById(domainName+"firstOU").innerHTML=jsTitleMsg.adssp_common_text_alloulist;
+				if(beanName != "EnrollForm"){submitOnChange();}
+			}
+		}
+	}
+}
+
+function toggle(elementName, id)
+{
+        var sel = document.getElementById(elementName + id);
+        var tree = document.getElementById("treeImg"+id);
+        if(sel.style.display == 'block')
+        {
+                sel.style.display = 'none';
+                tree.src="images/side_arrow.gif";
+                tree.width="5";
+                tree.height="9";
+        }
+        else
+        {
+                sel.style.display = 'block';
+                tree.src="images/down_arrow.gif";
+                tree.width="9";
+                tree.height="6";
+        }
+}
+
+function adjustFrameHeightWidth(height, width)
+{
+	var obj = document.getElementById('result');
+	obj.height = height + this.innerHeight;
+	obj.width = width + 35;
+}
+
+
+/*
+ | Browser object
+ */
+function ylib_Browser() {
+ d=document;
+ this.agt=navigator.userAgent.toLowerCase();
+ this.major = parseInt(navigator.appVersion);
+ this.dom=(d.getElementById)?1:0; // true for ie6, ns6
+ this.ns=(d.layers);
+ this.ns4up=(this.ns && this.major >=4);
+ this.ns6=(this.dom&&navigator.appName=="Netscape");
+ this.op=(window.opera? 1:0);
+ this.ie=(d.all);
+ this.ie4=(d.all&&!this.dom)?1:0;
+ this.ie4up=(this.ie && this.major >= 4);
+ this.ie5=(d.all&&this.dom);
+ this.win=((this.agt.indexOf("win")!=-1) || (this.agt.indexOf("16bit")!=-1));
+ this.mac=(this.agt.indexOf("mac")!=-1);
+}
+
+var oBw = new ylib_Browser();
+
+/* begin new */
+function ylib_setX(o,x) {
+	if(oBw.ns) {
+		o.left=x;
+	} else if(typeof o.style.pixelLeft != 'undefined') {
+		o.style.pixelLeft=x;
+	} else {
+		thisPos = parseInt(x);			// preventing NS UNcaught Exception Error in strict.dtd mode: converting value to integer in case passed as string
+		thisPos += "px";
+		o.style.left = thisPos;
+	}
+}
+function ylib_setY(o,y) {
+	if(oBw.ns) {
+		o.top=y;
+	} else if(typeof o.style.pixelTop != 'undefined') {
+		o.style.pixelTop=y;
+	} else {
+		thisPos = parseInt(y);			// preventing NS UNcaught Exception Error in strict.dtd mode: converting value to integer in case passed as string
+		thisPos += "px";
+		o.style.top = thisPos;
+	}
+}
+
+function ylib_getPageX(o) 
+{ 
+	var x=0; 
+	if(oBw.ns) 
+	{
+		x=o.pageX; 
+	}
+	else 
+	{
+		while(eval(o)) 
+		{
+			x+=o.offsetLeft; 
+			o=o.offsetParent; 
+		} 
+	} 
+	return x; 
+}
+
+function ylib_getPageY(o) { var y=0; if(oBw.ns) y=o.pageY; else { while(eval(o)) { y+=o.offsetTop; o=o.offsetParent; } } return y; }
+/* end new */
+
+function ylib_moveTo(o,x,y) { ylib_setX(o,x);ylib_setY(o,y); }
+
+var dd;
+function autoHide()
+{
+	if(dd != 'featureAlertAll' && eval(d.getElementById(dd)))
+	{
+		yreg_popLayer(dd);
+	}
+}
+
+function yreg_popLayer(div,href,offx,offy,bid) 
+{
+	dialogObj = d.getElementById(div);
+	var txt = 'td'+div;
+	var f = d.getElementById(txt);
+	if (dialogObj.style.display == 'none') 
+	{
+		dd = div;	
+		hidedialog(dialogObj);	
+		// if current popup is hidden, make sure all others are hidden.
+		//yreg_setLayerLocation(div,href,offx,offy);		
+		dialogObj.style.display = 'block'; //show layer	
+		if(f!=null) f.style.display = 'block'; //show layer	
+		showHideCombos(dialogObj, ylib_getPageX(dialogObj), ylib_getPageY(dialogObj), 'hidden');
+	
+	} 
+	else 
+	{
+		dd = null;	
+		dialogObj.style.display = 'none'; //show layer	
+		if(f!=null) f.style.display = 'none'; //show layer	
+		showHideCombos(dialogObj, ylib_getPageX(dialogObj), ylib_getPageY(dialogObj), 'visible');
+	}
+}
+function hidedialog(dialogObj)
+{
+	if (typeof prevDialogObj !="undefined")
+	{
+		if (ie4||ns6)
+		{
+			showHideCombos(prevDialogObj, ylib_getPageX(prevDialogObj), ylib_getPageY(prevDialogObj), 'visible');
+			prevDialogObj.style.display ='none';
+		}
+	}
+	prevDialogObj = d.getElementById(dialogObj.id);
+}
+function yreg_setLayerLocation(div,href,offx,offy) {
+	var e = d.getElementById(div);
+	//get position of link
+	var x=ylib_getPageX(href);
+	var y=ylib_getPageY(href);
+	// check and set there is offset
+	x= offx ? x + offx : x;
+	y= offy ? y + offy : y;
+	//move layer
+	ylib_moveTo(e, x, y);
+}
+
+
+
+//Contents for menu 1
+		
+var menuwidth='60px' //default menu width
+var menubgcolor='#FFFFFF'  //menu bgcolor
+var disappeardelay=150  //menu disappear speed onMouseout (in miliseconds)
+var hidemenu_onclick="yes" //hide menu when user clicks within menu?
+
+/////No further editting needed
+
+var ie4=document.all
+var ns6=document.getElementById&&!document.all
+
+function writeDiv()
+{
+if (ie4||ns6)
+document.write('<div id="dropmenudiv" style="visibility:hidden;width:'+menuwidth+';background-color:'+menubgcolor+'" onMouseover="clearhidemenu()" onMouseout="dynamichide(event)"></div>')
+}
+
+function getposOffset(what, offsettype)
+{
+	var totaloffset=(offsettype=="left")? what.offsetLeft : what.offsetTop;
+	var parentEl=what.offsetParent;
+	while (parentEl!=null)
+	{
+		totaloffset=(offsettype=="left")? totaloffset+parentEl.offsetLeft : totaloffset+parentEl.offsetTop;
+		parentEl=parentEl.offsetParent;
+	}
+	return totaloffset;
+}
+
+
+function showhide(obj, e, visible, hidden, menuwidth)
+{
+	if (ie4||ns6)
+	dropmenuobj.style.left=dropmenuobj.style.top=-500
+	if (menuwidth!="")
+	{
+		dropmenuobj.widthobj=dropmenuobj.style
+		dropmenuobj.widthobj.width=menuwidth
+	}
+	if (e.type=="click" && obj.visibility==hidden || e.type=="mouseover")
+	{
+		showHideCombos(dropmenuobj, dropmenuobj.x, dropmenuobj.y, 'hidden');
+		obj.visibility=visible
+	}
+	else if (e.type=="click")
+	{
+		showHideCombos(dropmenuobj, dropmenuobj.x, dropmenuobj.y, 'visible');
+		obj.visibility=hidden
+	}
+}
+
+function iecompattest()
+{
+	return (document.compatMode && document.compatMode!="BackCompat")? document.documentElement : document.body
+}
+
+function clearbrowseredge(obj, whichedge)
+{
+	var edgeoffset=0
+	if (whichedge=="rightedge")
+	{
+		var windowedge=ie4 && !window.opera? iecompattest().scrollLeft+iecompattest().clientWidth-15 : window.pageXOffset+window.innerWidth-15
+		dropmenuobj.contentmeasure=dropmenuobj.offsetWidth
+		if (windowedge-dropmenuobj.x < dropmenuobj.contentmeasure)
+		edgeoffset=dropmenuobj.contentmeasure-obj.offsetWidth
+	}
+	else
+	{
+		var windowedge=ie4 && !window.opera? iecompattest().scrollTop+iecompattest().clientHeight-15 : window.pageYOffset+window.innerHeight-18
+		dropmenuobj.contentmeasure=dropmenuobj.offsetHeight
+		if (windowedge-dropmenuobj.y < dropmenuobj.contentmeasure)
+		edgeoffset=dropmenuobj.contentmeasure+obj.offsetHeight
+	}
+	return edgeoffset
+}
+
+function populatemenu(what)
+{
+	if (ie4||ns6)
+	dropmenuobj.innerHTML=what.join("")
+}
+
+
+function dropdownmenu(obj, e, menucontents, menuwidth, menuX, menuY)
+{
+	autoHide();
+	if (window.event) event.cancelBubble=true
+	else if (e.stopPropagation) e.stopPropagation()
+	clearhidemenu()
+	dropmenuobj=document.getElementById? document.getElementById("dropmenudiv") : dropmenudiv
+	populatemenu(menucontents)
+
+	if (ie4||ns6)
+	{
+		var x = getposOffset(obj, "left");
+		if(menuX)
+		{
+			dropmenuobj.x=x+menuX;
+		}
+		else
+		{
+			dropmenuobj.x=x;
+		}
+
+		var y = getposOffset(obj, "top");
+		if(menuY)
+		{
+			dropmenuobj.y=y+menuY;
+		}
+		else
+		{
+			dropmenuobj.y=y+2;
+		}
+
+		showhide(dropmenuobj.style, e, "visible", "hidden", menuwidth)
+		dropmenuobj.style.left=dropmenuobj.x-clearbrowseredge(obj, "rightedge")+"px"
+		dropmenuobj.style.top=dropmenuobj.y-clearbrowseredge(obj, "bottomedge")+obj.offsetHeight+"px"
+	}
+
+	return clickreturnvalue()
+}
+
+function clickreturnvalue()
+{
+	if (ie4||ns6) return false
+	else return true
+}
+
+function contains_ns6(a, b) 
+{
+	while (eval(b) && b.parentNode)
+	if ((b = b.parentNode) == a)
+	return true;
+	return false;
+}
+
+function dynamichide(e)
+{
+	if (ie4&&!dropmenuobj.contains(e.toElement))
+		delayhidemenu()
+	else if (ns6&&e.currentTarget!= e.relatedTarget&& !contains_ns6(e.currentTarget, e.relatedTarget))
+		delayhidemenu()
+}
+
+function hidemenu(e)
+{
+	if (typeof dropmenuobj!="undefined")
+	{
+		if (ie4||ns6)
+		{
+			showHideCombos(dropmenuobj, dropmenuobj.x, dropmenuobj.y, 'visible');
+			dropmenuobj.style.visibility="hidden"
+		}
+	}
+}
+
+function delayhidemenu()
+{
+	if (ie4||ns6)
+	delayhide=setTimeout("hidemenu()",disappeardelay)
+	if (hidemenu_onclick=="yes")
+	{
+		document.onclick=
+		function(e){};
+	}
+}
+
+function clearhidemenu()
+{
+	if (typeof delayhide!="undefined")
+	clearTimeout(delayhide)
+}
+
+if (hidemenu_onclick=="yes")
+document.onclick=hidemenu
+
+function replaceSubstring(inputString, fromString, toString)
+{
+        var temp = inputString;
+        if (fromString == "")
+	{
+		return inputString;
+	}
+        if (toString.indexOf(fromString) == -1)
+	{
+         	while (temp.indexOf(fromString) != -1)
+		{
+		         var toTheLeft = temp.substring(0, temp.indexOf(fromString));
+		         var toTheRight = temp.substring(temp.indexOf(fromString)+fromString.length, temp.length);
+		         temp = toTheLeft + toString + toTheRight;
+	        }
+	}
+	else
+	{
+		var midStrings = new Array("~");
+        	var midStringLen = 1;
+	        var midString = "";
+        	while (midString == "")
+		{
+		        for (var i=0; i < midStrings.length; i++)
+			{
+			        var tempMidString = "";
+			        for (var j=0; j < midStringLen; j++)
+				{
+					tempMidString += midStrings[i];
+				}
+			        if (fromString.indexOf(tempMidString) == -1)
+				{
+				        midString = tempMidString;
+				        i = midStrings.length + 1;
+			        }
+        		}
+        	}
+	        while (temp.indexOf(fromString) != -1)
+		{
+		        var toTheLeft = temp.substring(0, temp.indexOf(fromString));
+	        	var toTheRight = temp.substring(temp.indexOf(fromString)+fromString.length, temp.length);
+	        	temp = toTheLeft + midString + toTheRight;
+        	}
+	        while (temp.indexOf(midString) != -1)
+		{
+		        var toTheLeft = temp.substring(0, temp.indexOf(midString));
+		        var toTheRight = temp.substring(temp.indexOf(midString)+midString.length, temp.length);
+		        temp = toTheLeft + toString + toTheRight;
+		}
+        }
+        return temp;
+}
+function hideStatus(){
+	       document.getElementById('statusTable').style.display = 'none';
+}
+function freezeLayer(freezeId, width, height, top, left, zIndex) {
+	if(!eval(document.getElementById(freezeId))){	
+		var oFreezeLayer = document.createElement("DIV");
+		oFreezeLayer.id = freezeId;
+		oFreezeLayer.className = "freezeLayer";
+		oFreezeLayer.style.width = width;
+		oFreezeLayer.style.height = height;
+		oFreezeLayer.style.top = top;
+		oFreezeLayer.style.left = left;
+		oFreezeLayer.style.zIndex = zIndex;
+		document.body.appendChild(oFreezeLayer);
+	}
+	document.getElementById("freezeSearch").style.display="block";
+}
+
+function removeFreezeLayer(freezeId){
+	if(eval(document.getElementById(freezeId)))
+	{
+		document.getElementById(freezeId).style.display="none";
+	}
+}
+
+//Licensed Users
+function selectAllLicUsers(flag)
+{
+	selectAll(document.forms[0].selectAll, document.forms[0].selectedUser, flag);
+	if(!flag)
+	{
+		var obj = document.forms[0].selectedUser;
+		var val = '';
+		for(var i=0; i<obj.length; i++)
+		{
+			if(i != 0) val += ',';
+			val += obj[i].value;
+
+		}
+		document.forms[0].rejectedUser.value = val;
+	}
+}
+
+function checkAll(selectAllObj, objs)
+{
+	var check = true;
+	if(eval(objs).length)
+	{
+		for(var i=0; i<objs.length; i++)
+		{
+			if(!objs[i].checked)
+			{
+				check = false;
+				break;
+			}
+		}
+	}
+	else
+	{
+		check = objs.checked;
+	}
+	if(selectAllObj) selectAllObj.checked = check;
+	updateSelectedCount('samAccountNames','disenrollCount'); //NO I18N
+}
+
+function updateSelectedCount(checkBoxName,targetElement)
+{
+	var selectedCount = $('input[name='+checkBoxName+']:checked').length;
+	if(eval(docid(targetElement))) docid(targetElement).innerHTML=selectedCount;
+}
+
+function checkThis(obj)
+{
+	popProperties = false;
+	checkAll(document.forms[0].selectAll, document.forms[0].selectedUser);
+	if(!obj.checked)
+	{
+		var val = document.forms[0].rejectedUser.value;
+		if(val != '') val += ',';
+		val += obj.value;
+		document.forms[0].rejectedUser.value = val;
+	}
+}
+
+function validate()
+{
+	if(validateDomains())
+	{
+		return true;
+	}
+	return false;
+}
+
+function getInputURL()
+{
+	var url = '';
+	return url;
+}
+function showDiv(divId)
+{
+	var divToShow = document.getElementById(divId);
+	if(divToShow!=null)
+	divToShow.style.display= 'block';	
+}
+
+function hideDiv(divId)
+{
+	var divToShow = document.getElementById(divId);
+	if(divToShow!=null)
+	divToShow.style.display= 'none';	
+}
+
+function closeDiv(obj)
+{
+	yreg_popLayer('descriptionDiv');  //NO I18N
+}
+
+function openDiv(obj)
+{
+	var sObj = document.getElementById('descriptionDiv');
+
+	if(sObj.style.display == 'block')
+	{
+		closeDiv();
+	}
+	else
+	{
+		yreg_popLayer('descriptionDiv', obj, 10, 20); //NO I18N
+		getDescription();
+	}
+}
+//Licensed Users Ends
+
+//for highlighting a row in the results
+
+function docid(x)
+{
+	return document.getElementById(x);
+}
+
+function rowColor(rowCount, cnt) // for highlighting the selected row
+{
+	var counter;
+	for(counter=0;counter<rowCount;counter++)
+	{
+		var rowObj = docid('row'+counter);
+		if(counter == cnt)
+		{
+			rowObj.style.fontWeight = 'bold'; //NO I18N
+		}
+		else
+		{
+			rowObj.style.fontWeight = 'normal'; //NO I18N
+		}
+	}
+}
+			
+function rowColorOver(cntOver) // for highlighting the row hovered
+{
+	var rowObjOver = docid('row'+cntOver);
+	rowObjOver.style.background = '#ffffe0'; //NO I18N
+}
+			
+function noRowColorOver(noCntOver) // for not highlighting other rows when a particular row is hovered
+{
+	var noRowObjOver = docid('row'+noCntOver);
+	if(noCntOver%2 == 0)
+	{
+		noRowObjOver.style.background = '#ffffff'; //NO I18N
+	}
+	else
+	{
+		noRowObjOver.style.background = '#f9f9f9'; //NO I18N
+	}				
+}
+
+// for search in all reports
+
+function keyPressEvent(event)
+{
+	if(event && (event.keyCode== 13 || event.which == 13))
+	{
+		searchString();
+		return false;
+	}
+}
+
+function ShowHideSearch()
+{
+	var obj = document.getElementById('qkSearch');
+	if(obj.style.display == 'none')
+	{
+		obj.style.display = '';
+	}
+	else
+	{
+		obj.style.display = 'none'; //NO I18N
+	}
+}
+
+// for Export As
+
+function showExport(x)
+{
+	document.getElementById(x).style.display='block'; //NO I18N
+}
+function hiddenExport(x)
+{
+	document.getElementById(x).style.display='none'; //NO I18N
+}
+// Mail reports
+
+function showMailSettings(x)
+{	
+	
+	if(x=="ok")
+	{
+		url="ServerSettings.do?selectedTab=admin&selectedTile=ServerSettings&methodToCall=serverSettings&server=mail"; //NO I18N
+		if(eval(window.parent.opener))
+		{	
+			window.parent.close();
+			SubmitCsrfForm(url);
+		}
+		else
+		{
+			SubmitCsrfForm(url);
+		}			
+	}
+	if(mailServer =="" && x=="open")
+	{
+		if(isOperator)
+		{
+			parent.alertMsg(jsTitleMsg.adssp_admin_server_settings_mail_server_not_configured);
+			return false;
+		}
+		else
+		{
+			parent.confirmMsg(jsTitleMsg.adssp_admin_policies_scheduler_soon_to_expire_config_mail_server, 'showMailSettings', 'ok');
+		return false;
+		}
+	}
+	try
+	{
+	docid('EXPORT_SETTINGS').style.display="none"; //NO I18N
+	docid('SEND_MAIL_SETTINGS').style.display = "block";	   //NO I18N
+	}
+	catch(err)
+	{
+	}
+	return true;
+	
+}
+/*
+if(typeof String.prototype.trim !== 'function') 
+{
+  String.prototype.trim = function() 
+  {
+    return this.replace(/^\s+|\s+$/g, ''); 
+  }
+}
+*/
+function isValidMailSettings()
+{
+	var mailInputs=["STORAGE_PATH","ADMIN_MAIL_SUBJECT","ADMIN_MAIL_CONTENT"]; //NO I18N
+	for(i=0;i<mailInputs.length;i++)
+	{
+		
+		var inputVal=docid(mailInputs[i]).value;
+		if(inputVal.trim()=='')
+		{
+			$('#'+mailInputs[i]).addClass('redBorder');
+			if($("#"+mailInputs[i]).hasClass('rtf'))
+			{
+				$("#"+mailInputs[i]).parent().parent().addClass('redBorder');//NO I18N
+			}
+			if(eval(docid('mailSettingBlock')))
+			{
+			docid('mailSettingBlock').style.display='block'; //NO I18N
+			}
+			return false;
+		}
+		else
+		{
+			$('#'+mailInputs[i]).removeClass('redBorder');
+		}
+	}
+	if(!isValidFilePath(docid("STORAGE_PATH").value))
+	{
+		$('#STORAGE_PATH').addClass('redBorder').attr('title',jsTitleMsg.adssp_common_invalid_chars_in_file_path);
+		if(eval(docid('mailSettingBlock')))
+		{
+		docid('mailSettingBlock').style.display='block'; //NO I18N
+		}
+		return false;
+	}
+	return true;
+}
+
+function mailReport()
+{
+		if(isValidMailSettings())
+		{
+		docid('MAIL_REPORT_LOAD').style.visibility='visible'; //NO I18N
+		var clickVal=docid("SEND_MAIL_DIV").onclick;
+		docid("SEND_MAIL_DIV").onclick=null;
+		var url='mailReport.do?methodToCall=mailReport'; //NO I18N
+		var option='';
+		
+		var params="reportId="+reportId+"&mailIds="+docid('EMAIL_ID').value+"&adSub="+encodeURIComponent(docid('ADMIN_MAIL_SUBJECT').value)+"&adMsg="+encodeURIComponent(docid('ADMIN_MAIL_CONTENT').value)+"&fileFormat="+docid('FILE_FORMAT').value+"&storagePath="+docid('STORAGE_PATH').value+"&isZip="+docid('SEND_AS_ZIP').checked; //NO I18N
+		if(reportId=="401")
+		{
+		    params=params+"&option=installed"; //NO I18N
+		}
+		else if(reportId=="402")
+		{
+		    params=params+"&option=error"; //NO I18N
+		}
+		else if (reportId>300 && reportId<310 && reportId!=306)
+		{
+			if(typeof asc!="undefined")
+			{
+				params+='&ascending='+asc;          //No I18N
+			}
+		}
+		else if(reportId!="111")
+		{
+			params=params+"&domains="+docid('domains').value; //NO I18N
+			if(reportId == 306)
+			{
+				var textObjs= docid('qkSearch').getElementsByTagName('input');
+				var str='';
+				for(var i=0; i<textObjs.length;i++)	
+				{	
+					var name = textObjs[i].name;
+					var val = textObjs[i].value;
+					var type = textObjs[i].type;
+					if(type == 'text' && name.indexOf("search") != -1)
+					{
+						val = trimAll(val);
+						if(val != '' && typeof val != 'undefined')
+						{
+							contains = true;
+							if(str != '') str += '&';
+							str += name + "=" + encodeURIComponent(val);//No I18N 
+						}
+					}
+				}
+				var searchREASON_FOR_RESTRICTION= docid('qkSearch').getElementsByTagName('select')[0].value;
+				if(searchREASON_FOR_RESTRICTION!=''&& typeof searchREASON_FOR_RESTRICTION != 'undefined')
+				{
+					if(str != '') str += '&';
+					str +='searchREASON_FOR_RESTRICTION='+encodeURIComponent(searchREASON_FOR_RESTRICTION);//No I18N 
+				}
+				params=params+"&sortColumn="+sortColumn+"&sortAscending="+sortAscending;        //NO I18N
+				if(str != '')
+					params+='&search=true&'+str;//No I18N 
+			}
+		}
+		if(reportId=="107")
+		{
+			params+="&reportFilter="+reportFilters;			//NO I18N
+		}
+		if(reportId=="101"||reportId=="102"||reportId=="103"||reportId=="106"||reportId=="108"||reportId=="110"||reportId=="111")
+		{
+			params+="&period="+period+"&fromTime="+fromTime+"&toTime="+toTime+"&filter="+docid('filterId').value;			//NO I18N
+		}
+		AjaxAPI.sendRequest({URL:url,PARAMETERS:params,ONSUCCESSFUNC:showStatus,ONCLICKVAL:clickVal});
+		}
+
+}
+
+function showStatus(response,reqOptions)
+{
+	
+	docid('SEND_MAIL_SETTINGS').style.display='none';
+	docid('MAIL_REPORT_LOAD').style.visibility='hidden';
+	docid("SEND_MAIL_DIV").onclick=reqOptions["ONCLICKVAL"]; //NO I18N
+	var req = response.transport;
+	var x = req.responseXML.getElementsByTagName('status');
+	
+	docid('STATUS_MSG_TD').innerHTML=x[0].getAttribute("MAIL_STATUS");
+	docid('TABLE_STATUS').className=x[0].getAttribute("STATUS_TYPE");
+	docid('ICON_DIV').className=x[0].getAttribute("STATUS_ICON");
+	docid('JS_STATUS').style.display='block';
+	
+	
+}
+
+function formSearchStr()
+{
+//	var textObjs = document.forms[0].elements;
+	var textObjs= docid('qkSearch').getElementsByTagName('input');
+	var str = '';
+	for(var i=0; i<textObjs.length;i++)	
+	{
+		var name = textObjs[i].name;
+		var type = textObjs[i].type;
+		
+		if(type == 'text')
+		{
+			var val = trimAll(textObjs[i].value);
+			if(val != '')
+			{
+				if(str != '') str += '||';
+				str += name + "=" + encodeURIComponent(val); // escape(val)
+			}
+		}
+	}
+	if(str!=''){str = "search=("+str+")";}	//NO I18N
+	return str;
+}

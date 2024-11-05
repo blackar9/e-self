@@ -1,0 +1,118 @@
+/*
+  $Id$
+  */
+
+AudioCaptchaAudioManager = function (context) {
+    this.context = context;
+    this.bufferList = {};
+    this.playingSounds = {};
+};
+
+
+AudioCaptchaAudioManager.prototype = {
+     addSound: function (url, callback) {
+        // Load buffer asynchronously
+        var request = new XMLHttpRequest();
+        request.open("GET", url, true);//No I18N
+        request.responseType = "arraybuffer";//No I18N
+
+        var self = this;
+
+        request.onload = function () {
+            // Asynchronously decode the audio file data in request.response
+            self.context.decodeAudioData(
+                request.response,
+
+                function (buffer) {
+                   if (!buffer) {
+                        return;
+                    }
+
+                    self.bufferList[url] = buffer;
+
+                    if(callback) {
+                        callback();
+                    }
+                });
+        };
+
+       
+
+        request.send();
+    },
+    stopSoundWithUrl: function(url) {
+        if(this.playingSounds.hasOwnProperty(url)){
+            for(var i in this.playingSounds[url]){
+                if(this.playingSounds[url].hasOwnProperty(i))
+                    this.playingSounds[url][i].stop(0);
+            }
+        }
+        
+        
+    }
+};
+
+/*
+ * WebAudioAPISound Constructor
+ */
+ AudioCaptchaAudio = function (url, onLoadCallBack) {    
+    this.url = url;
+    window.audioCaptchaAudioManager = window.audioCaptchaAudioManager || new AudioCaptchaAudioManager(window.audioContext);
+    this.manager = window.audioCaptchaAudioManager;
+
+	// Safari suspends the audioContext once created. So, manuall resuming it once created.
+	if(window.audioContext && window.audioContext.resume)
+	{
+	    window.audioContext.resume();
+	}
+
+    this.manager.addSound(this.url, onLoadCallBack);
+};
+
+/*
+ * WebAudioAPISound Prototype
+ */
+AudioCaptchaAudio.prototype = {
+    play: function () {
+        var buffer = this.manager.bufferList[this.url];
+        //Only play if it's loaded yet
+        if (typeof buffer !== "undefined") {
+            var source = this.makeSource(buffer);
+            source.start(0);
+            if(!this.manager.playingSounds.hasOwnProperty(this.url))
+                this.manager.playingSounds[this.url] = [];
+            this.manager.playingSounds[this.url].push(source);
+        }
+    },
+    stop: function () {
+        this.manager.stopSoundWithUrl(this.url);
+    },
+    getVolume: function () {
+        return this.translateVolume(this.volume, true);
+    },
+    //Expect to receive in range 0-100
+    setVolume: function (volume) {
+        this.volume = this.translateVolume(volume);
+    },
+    translateVolume: function(volume, inverse){
+        return inverse ? volume * 100 : volume / 100;
+    },
+    makeSource: function (buffer) {
+        var source = this.manager.context.createBufferSource();
+        var gainNode = this.manager.context.createGain();
+        this.gainNode = gainNode;
+        this.gainNode.gain.value = this.volume;
+        source.buffer = buffer;
+        source.connect(this.gainNode);
+        this.gainNode.connect(this.manager.context.destination);
+        return source;
+    },
+    disconnectSrc: function(){
+	   if(this.gainNode != null)
+	   {
+			this.gainNode.disconnect(this.manager.context.destination);
+	   }
+    }
+};
+
+

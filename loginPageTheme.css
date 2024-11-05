@@ -1,0 +1,172 @@
+body.ssp_theme_custom .ssp-top-pane {
+  background-color: #ffffff !important;
+  color: #000000 !important;
+  border-bottom: 1px solid #d3d3d3 !important;
+}
+body.ssp_theme_custom .ssp-top-pane .top-pane-mid #employeeSearch.top-pane-search .input-group .form-control {
+  background-color: #ebebeb !important;
+}
+body.ssp_theme_custom .ssp-top-pane .top-pane-mid #employeeSearch.top-pane-search .input-group .classic-dropdown {
+  background-color: #d9d9d9 !important;
+}
+body.ssp_theme_custom .ssp-top-pane .top-pane-mid #employeeSearch.top-pane-search .input-group .classic-dropdown .dropdown-menu {
+  color: #000000 !important;
+}
+body.ssp_theme_custom .ssp-top-pane .top-pane-mid #employeeSearch.top-pane-search .input-group .classic-dropdown .dropdown-toggle {
+  opacity: 1 !important;
+}
+body.ssp_theme_custom .ssp-top-pane .misc-area .misc-menu .navbar-nav > li.open > ul .user-profile a,
+body.ssp_theme_custom .nav-line-tabs .nav-tabs li.active a {
+  border-bottom-color: #666666 !important;
+}
+body.ssp_theme_custom .ssp-top-pane .nav-area .top-menu li > a {
+  background-color: #d9d9d9 !important;
+  color: #000000 !important;
+  border-color: #ffffff !important;
+  line-height: 13px !important;
+}
+body.ssp_theme_custom .ssp-top-pane .nav-area .top-menu li.active > a {
+  background-color: #ebebeb !important;
+  color: #000000 !important;
+}
+body.ssp_theme_custom .ssp-top-pane .settings-btn {
+  color: #000000 !important;
+  background-color: #ebebeb !important;
+}
+body.ssp_theme_custom .icn-cog-wheel-white {
+  background-position: -252px -38px !important;
+}
+body.ssp_theme_custom .input-group-icon-btn .btn,
+body.ssp_theme_custom .doubly-list .doubly-list-box ul > li.selected,
+body.ssp_theme_custom .btn-theme,
+body.ssp_theme_custom .layout-pane .lyt-body .lyt-lhs .lyt-lhs-panel-group .panel > .panel-collapse > .panel-body ul.lyt-lhs-drag-component > li > div,
+body.ssp_theme_custom .layout-pane .lyt-body .lyt-lhs .lyt-lhs-panel-group .panel > .panel-collapse > .panel-body ul.lyt-lhs-drag-component > li > div > div.lyt-lhs-drag-tool,
+body.ssp_theme_custom .file-browse .btn,
+body.ssp_theme_custom .feedback-button,
+body.ssp_theme_custom .file-upload .btn {
+  background-color: #666666 !important;
+  color: #ffffff !important;
+}
+body.ssp_theme_custom .layout-pane .lyt-body .lyt-lhs .lyt-lhs-panel-group .panel > .panel-collapse > .panel-body ul.lyt-lhs-drag-component > li.dropped > div {
+  background-color: #e4e4e4 !important;
+  color: #7d7d7d !important;
+}
+body.ssp_theme_custom #employeeSearch {
+  background-color: #ebebeb !important;
+  color: #ffffff !important;
+}
+body.ssp_theme_custom .fw tr:not(.day-time-notation) th,
+body.ssp_theme_custom .fw .panel-group:not(.panel-group2):not(.panel-classic) .panel-heading,
+body.ssp_theme_custom .fw .input-group-addon,
+body.ssp_theme_custom .ssp-table tr th,
+body.ssp_theme_custom .panel-ssp > .panel-head,
+body.ssp_theme_custom .panel-ssp > .panel-heading {
+  background-color: #666666 !important;
+  color: #ffffff !important;
+}
+body.ssp_theme_custom .layout-pane .lyt-body .lyt-lhs .lyt-lhs-panel-group .panel > .panel-collapse > .panel-body ul.lyt-lhs-drag-component > li.dropped > div > div.lyt-lhs-drag-tool {
+  background-color: #e4e4e4 !important;
+}
+body.ssp_theme_custom .ssp-top-pane .misc-area .misc-menu .navbar-nav > li.last .caret {
+  color: #000000 !important;
+}
+body.ssp_theme_custom .ssp-top-pane .misc-area .misc-menu .navbar-nav > li > a {
+  color: #000000 !important;
+}
+body.ssp_theme_custom .ssp-top-pane .misc-area .misc-menu .navbar-nav > li > a .icn-alerts1 {
+  background-position: -177px -1329px !important;
+}
+body.ssp_theme_custom .ssp-top-pane .misc-area .misc-menu .navbar-nav > li > a .count {
+  color: #ffffff !important;
+}
+body.ssp_theme_custom .icn-hamburger-lg {
+  background-position: -334px -1477px !important;
+}
+body.ssp_theme_custom .btn-primary {
+  background-color: #666666 !important;
+}
+body.ssp_theme_custom .daterangepicker .ranges li.active,
+body.ssp_theme_custom .daterangepicker td.active,
+body.ssp_theme_custom .daterangepicker td.active:hover,
+body.ssp_theme_custom .daterangepicker .range_inputs .btn-sm.applyBtn {
+  background-color: #666666 !important;
+}
+body.ssp_theme_custom .lnav li.active a,
+body.ssp_theme_custom .lnav > li li.active a,
+body.ssp_theme_custom .vertical-line-tab .vertical-tab-nav > ul > li.active > a {
+  border-left: 3px solid #666666 !important;
+}
+body.ssp_theme_custom .icn-user {
+  background-position: -61px -90px !important;
+  background-position: -233px -1370px !important;
+}
+body.ssp_theme_custom .icn-user-lg {
+  background-position: -178px -1428px !important;
+  background-position: -259px -1428px !important;
+}
+body.ssp_theme_custom .icn-upgrade {
+  background-position: -278px -1372px !important;
+}
+body.ssp_theme_custom .icn-help {
+  background-position: -231px -188px !important;
+}
+body.ssp_theme_custom .CSTopMenuColor {
+  background-color: #ffffff !important;
+}
+body.ssp_theme_custom .CSTopMenuFontColor {
+  color: #000000 !important;
+}
+body.ssp_theme_custom .CSTopMenuActiveColor {
+  background-color: #ebebeb !important;
+}
+body.ssp_theme_custom .CSTopMenuButtonColor {
+  background-color: #ebebeb !important;
+}
+body.ssp_theme_custom .CSTopMenuIconColor {
+  color: #000000 !important;
+}
+body.ssp_theme_custom .CSTopMenuFontColor {
+  color: #000000 !important;
+}
+body.ssp_theme_custom .CSTopMenuActiveFontColor {
+  color: #000000 !important;
+}
+body.ssp_theme_custom .CSTopMenuButtonFontColor {
+  color: #000000 !important;
+}
+body.ssp_theme_custom .CSSaveOkColor {
+  background-color: #666666 !important;
+}
+body.ssp_theme_custom .CSTableHeadColor {
+  background-color: #666666 !important;
+}
+body.ssp_theme_custom .CSActiveColor {
+  border-color: #666666 !important;
+}
+body.ssp_theme_custom .CSTopMenuActiveColor {
+  background-color: #ebebeb !important;
+}
+body.ssp_theme_custom .CSFormButtonColor {
+  background-color: #666666 !important;
+}
+body.ssp_theme_custom .CSFormButtonTextColor {
+  color: #ffffff !important;
+}
+body.ssp_theme_custom .CSSaveOkTextColor {
+  color: #ffffff !important;
+}
+body.ssp_theme_custom .CSTableHeadTextColor {
+  color: #ffffff !important;
+}
+body.ssp_theme_custom .white-bg {
+  background-color: #ffffff !important;
+}
+body.ssp_theme_custom .black-bg {
+  background-color: #000000 !important;
+}
+body.ssp_theme_custom .white-fg {
+  color: #ffffff !important;
+}
+body.ssp_theme_custom .black-fg {
+  color: #000000 !important;
+}
